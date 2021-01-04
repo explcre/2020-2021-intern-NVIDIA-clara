@@ -1,0 +1,382 @@
+哈啰~大家好，我是Eddie Huang，
+
+目前任职于NVIDIA问题解决架构部门，
+
+今天拍摄这个视频主要目地是要介绍
+
+NVIDIA在医疗领域的高速运算平台Clara，
+
+Clara的命名是以纪念北美红十字会的创办人Clara Barton，
+
+NVIDIA发展Clara已经有两年多的时间，
+
+两个星期前最新版Clara已经释出，
+
+新版最重要的概念是提供客户
+
+更方便更上手的医疗AI发展与部署的工具，
+
+新版Clara甚至让程式不熟悉的医疗从业人员
+
+也可以快速训练出自己的AI模型并部属到工作场域中，
+
+我跟同事Jay目前拍摄三个视频，
+
+演示如何将Clara快速上手，
+
+每一个视频大约15分钟的时间，
+
+透过这三个视频相信大家也可以追上
+
+最新的AI训练技术并快速完成与模型部属的工作。
+
+在今天第一个演示内容有
+
+·Clara平台下载与安装，
+
+·MMAR格式介绍，
+
+·前沿loss与optimizer新选项，
+
+·分散式多GPU训练，
+
+希望对大家在发展医疗AI有所帮助。
+
+大家好，今天跟大家分享Clara Train Live Demo，
+
+首先我们要先将我们的程式码准备好，
+http://gitlab-master.nvidia.com/aharouni/claratraindevday
+连接到我们公司内部的程式库。
+
+首先，我们要把它下载到我们的本地端，在传上我们的伺服器。
+
+我们可以透过scp的方式，将这个程式库传送到我们的伺服器上。
+
+传送完成后，我们开始连接到伺服器进行操作，
+
+我们今天使用的机器是DGX station，包含的是4张V100的显示卡。
+
+首先，我们创造一个Clara-Train的资料夹。
+
+我们将这份程式库移到资料夹中进行解压缩。
+
+解压缩后，我们对他进行更名，
+
+我就可以开始我们今天的Demo。
+
+根据教学文件，我们先移动到"scripts"的路径底下。
+
+在开启Docker的环境之前，我们要先修正Docker的启动脚本。
+
+修正内容包含我们要使用最新的Clara 3.0
+
+以及Jupyter Notebook的对应外接埠，
+
+还有我们要使用的GPU数量，以及AIAA的外接埠。
+
+另外，我们要更改资料储存的路径。
+
+储存完后我们就可以使用这个脚本来开启我们的docker环境，
+
+Docker环境中通过简易设定环境变数，
+
+以及我们对应到Mount的路径，
+
+我们的Work Directory设定为scripts这个资料夹底下，
+
+我们要执行的Docker Image为Clara 3.0。
+
+接下来我们改写"StartDocker.sh"的权限并执行它。
+
+接下来我们就进到了Docker Container的环境之中。
+
+接下来根据教学，我们可以藉由脚本开启jupyter Notebook。
+
+在这个"installDashboardDocker.sh"的脚本之中，
+
+我们会安装Jupyter Lab , NVdashboard，
+
+我们在最后加上"NotebookApp.token"等于空白，
+
+将可以方便我们接下来的操作。
+
+我们改变这个执行脚本的权限，然后执行它。
+
+安装完NVdashboard的同时，它也会开启Jupyter Notebook。
+
+我们就可以藉由8888外接埠，
+
+来连接到我们的伺服器进行操作。
+
+首先我们点开我们的"welcom.ipynb"。
+
+在正式开始之前，
+
+我们先下载我们今天会使用到的Spleen Segmentation Dataset。
+
+下载完后就可以正式开始我们今天的Demo。
+
+Clara AI包含了三大部分，
+
+分别是Clara Train，Clara Deploy，Clara AGX SDK。
+
+Clara是一个正在发展和更新的套件，
+
+我们可以看到，随着时间，我们的功能不断的在增加。
+
+这个是我们刚刚安装的GPU Dashboard，
+
+我们可以藉由这个Dashboard去监测GPU的使用状况。
+
+藉由分析这些使用状况，可以让我们的GPU效能发挥的更好，
+
+也让我们有调整的方向。
+
+当然如果我们有双银幕的话，
+
+我们可以把这些统计资讯放在另外一个银幕上。
+
+就可以得到更好的操作。
+
+接下来跟各位分享今日内容的大纲，
+
+今日内容包含Clara Train的一些基本API使用方式，
+
+以及AI Assited Annotation (AIAA)的操作细节，
+
+还有AutoML这个功能，
+
+以及最后教大家如何在大型的医疗影像上提升效能以及加速。
+
+这个脚本以外还有不同的实作范例，
+
+可以供各位参考，以及最后的联邦学习，
+
+也是很值得进一步探讨的议题。
+
+今日的主题会聚焦在前四个范例上。
+
+接下来我们可以开始准备我们的demo。
+
+今天的一个Demo的主题为Getting-Started。
+
+在这个Demo之中，会跟各位分享
+
+MMAR(Medical Model Archive)的格式，
+
+以及如何通过Clara的API去设定Configuration，
+
+还有训练模型，微调，汇出，以及测试资料集。
+
+最后也会跟各位展示如何使用多GPU的API来做训练。
+
+接下来通过连接到们今日的Notebook，
+
+Clara Train SDK包含三大部分，
+
+分别为Preparation, Training以及Model Output。
+
+在前处理的部分包含AIAA以及资料的Conversion。
+
+Training的部分，包含NGC上提供的Pretained Models，
+
+单GPU多GPU的训练，AutoML以及联邦学习。
+
+以上是Clara Train的主要内容。
+
+首先先透过NVIDIA的API，看一下GPU的使用状况，
+
+接下来我们定义一些环境变数，以及辅助的程式。
+
+首先介绍什么是Medical Model Archive，
+
+在MMAR这个格式里面会包含以下几种Json Files。
+
+Json的内容包含训练的Loss Function，Optimizer，
+
+以及使用到的Model。
+
+MMAR是一个Pretrained好的模型，在NBC上，
+
+可以给使用者进行下载，省去训练的时间，
+
+每一个MMAR的资料底下会包含以下内容。
+
+其中"Commands"里面包含的Training单GPU多GPU，
+
+Validation，Inference以及汇出成TRTIS的格式。
+
+在Clara Train SDK中还有一个很重要的环境变数档案，
+
+为"environment.json"，
+
+其中包含了一些环境变数，必须由使用者去定义。
+
+藉由刚刚定义好的"function"，我们可以把这些设定显示出来，
+
+当然这些设定的详细资讯
+
+都可以在Clara Train的官方文件上获得进一步的说明。
+
+接下来跟各位解说"config.json"里面包含的内容。
+
+这些Pretrained好的模型都可以在官方文件上获得进一步的解说，
+
+譬如说这个MRI Brain Tumor Segmentation Model。
+
+在"config"
+
+Training Configuration，以及Validation Configuration。
+
+我们也可以通过刚刚的函式，将这些设定细节显示出来。
+
+我们在训练的"config"中包含了各式各样最先进的"loss function"，
+
+譬如说Dice Loss，Focal Loss, Focal Dice，
+
+可以看一下Focal Loss。
+
+Focal Loss API，可以在我们的官方网站上找到对应的说明。
+
+再跟各位进一步介绍Focal Dice Loss。
+
+这是一篇2018的论文。
+
+同时在"Optimizer"的部分我们可以看到"Novograd Optimizer"。
+
+这是一篇2020年的论文，由NVIDIA我们内部的研发团队所发表。
+
+所以可以知道在Clara Train中所使用的技术都是最先进的。
+
+当然，在网络架构中，
+
+以及"Learning Rate Policy"，我们都使用了最先进的实作方式。
+
+另外，Image Pipeline以及Preprocessing
+
+这些医疗影像常见的前处理在Clara Train SDK中都可以使用。
+
+接下来我们就开始准备我们的训练。
+
+在这次的训练中，我们发现了一些错误。
+
+回去看这些Log资讯发现是OOM的资讯，
+
+OOM代表的是out of Memory，
+
+很可能是我们的医疗影像资料过大，
+
+batch size设定大于我们GPU Memory的使用容量，
+
+于是我们可以到Configuration这个"trn_base"之中调整我们的batch size。
+
+我们用"Ctrl+F"来搜寻"batch size"相关的参数，
+
+现在是4张医疗影像为一个batch，我们将它改写为2张。
+
+改写完毕后我们就可以回到我们的Notebook，准备训练，
+
+训练开始之前，我们可以通过GPU的监测视觉化
+
+来辅助我们等下的训练。
+
+我们先将这些监测的UI设置完成。
+
+设置完成后开始训练。
+
+接下来我们可以藉由下图的TensorBoard。
+
+我们可以开启一个TensorBoard，来视觉化我们的训练结果。
+
+当然，同时我们可以看到最下面两个GPU Utilization以及GPU Memory，
+
+其中一颗GPU的占有率都已经提高，代表模型已开始训练。
+
+在TensorBoard的视觉化上，我们可以明显看到这个是一个Unet的架构。
+
+我们回到Notebook看到训练已经开始，我们可以通过TensorBoard's Scalar。
+
+来观察我们的Loss下降状况。
+
+当然，这个训练会花费一些时间。
+
+我们跳过训练的过程，直接来看结果。
+
+训练完成后总共花费400多秒的时间。
+
+接下来我们可以将模型汇出。
+
+一样透过Clara Train的Configuration设定档，
+
+我们可以轻易的将模型汇出。
+
+汇出的模型包含两个，
+
+一个是原始的模型，一个是TRT File。
+
+TRT代表TensorRT，是经过TensorRT优化器产生出来的模型，
+
+可以让Latency以及Throughput有更好的表现，
+
+我们在对应的输出路径上也可以看到我们产生的两个模型。
+
+接下来，我们可以对模型进行评估。
+
+我们可以透过Clara的设定档来进行评估。
+
+评估过程会自动到Validation Dataset进行验证。
+
+但今天我们展示的范例，都使用的是范例资料集。
+
+所以这边我们训练出来得到的结果并不是非常好，也是可预期的，
+
+因为我们的资料集只有使用一张图片。
+
+接下来跟各位展示的是Clara Train多GPU的训练模式，
+
+我们采用的是Uber所开发的训练框架，称作Horovod，
+
+他是一个分散式的快速学习框架，当然也是建立在NVIDIA的科技之上，
+
+分别是RDMA以及GPUDirect，
+
+现在我们可以执行Configuration的脚本来进行训练。
+
+这边的训练过程，我们使用的影片加速，
+
+我们可以看到最下面的利用率以及记忆体，
+
+都同时有两颗的GPU，正在被使用，
+
+以上是第一部分的展示，谢谢大家。
+
+谢谢观看我们的展演介绍，
+
+在今天介绍的功能当中，
+
+哪一个是你觉得最有趣的一个功能或步骤呢？！
+
+我自己的话，我会觉得MMAR会是影响最大的一个功能，
+
+它让整个开发流程有了规则，
+
+对资料科学家来说
+
+不同神经网路训练与测试都可以很方便归档与维护，
+
+对医师来说想要训练不同超参数
+
+可以方便去configure的地方修改，
+
+最最最重要的事，如果开发医疗AI服务要进行商用的话，
+
+这套MMAR规则可以方便我们ISO化，
+
+符合软体系统品质管理整体开发流程，
+
+对想要申请ISO13485医疗器材开发认证的朋友有很大帮助。
+
+最后谢谢大家的收看，
+
+如果对Clara有任何问题随时欢迎您透过Email与我们联系。
+
